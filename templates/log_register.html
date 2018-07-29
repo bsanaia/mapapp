@@ -1,0 +1,45 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Login/ Register form from my dashboard</title>
+  <link href="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <div id="log_reg">
+<div class="login-page">
+  <div class="form">
+    <form class="login-form" method="POST">
+      {% csrf_token %}
+      <div class="title">
+        <p>Log In</p>
+      </div>
+      {% for i in login_form %}
+        {{ i }}
+      {% endfor %}
+      <button name="btn-login">Login</button>
+      <p class="message">Not registered? <a href="#">Create an account</a></p>
+      <p class="message">Forget password? <a href="{% url 'user:password_reset' %}">Click here</a></p>
+    </form>
+    <form class="register-form" method="POST">
+      {% csrf_token %}
+        {% for i in signup_form %}
+          {{ i }}
+        {% endfor %}
+      <button>create</button>
+      <p class="message" id="vf">Already registered?<a href="#">Sign In</a></p>
+    </form>
+
+    <form id="confirmForm" class="register-form">
+      <p id="cMessage" style="visibility: hidden">Please confirm your email to sign in!</p>
+    </form>
+  </div>
+</div>
+  </div>
+  <script src='{% static 'js/jquery.min.js' %}'></script>
+  <script  src="{% static 'js/index.js' %}"></script>
+</body>
+</html>
