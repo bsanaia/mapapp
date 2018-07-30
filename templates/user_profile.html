@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,54 +7,67 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="{% static 'js/jquery.min.js' %}"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
 <br><br><br><br><br><br>
 <div class="container">
-  <form action="/action_page.php">
+  <form method="POST">
+      {% csrf_token %}
     <div class="form-group">
       <input class="form-control" id="Title" placeholder="Title" name="Title">
     </div>
     <div class="form-group">
-      <input class="form-control" id="pwd" placeholder="Description" name="Description">
+      <input class="form-control" id="Description" placeholder="Description" name="Description">
     </div>
     <div class="form-group">
-      <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Classification
-        <span class="caret"></span></button>
-        <ul class="dropdown-menu">
-          <li><a href="#">Excellent</a></li>
-          <li><a href="#">Good</a></li>
-          <li><a href="#">Interesting</a></li>
-          <li><a href="#">Not interesting</a></li>
-        </ul>
-      </div>
+        <select class="selectpicker" id="classification">
+            <option>Mustard</option>
+            <option>Ketchup</option>
+            <option>Relish</option>
+        </select>
     </div>
       <div class="form-group">
-      <input class="form-control" id="pwd" placeholder="Latitude" name="Latitude">
+      <input class="form-control" id="Latitude" placeholder="Latitude" name="Latitude">
     </div>
       <div class="form-group">
-      <input class="form-control" id="pwd" placeholder="Longitude" name="Longitude">
+      <input class="form-control" id="Longitude" placeholder="Longitude" name="Longitude">
     </div>
+
       <div class="form-group">
-      <input class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+        <label class="btn btn-primary" for="Image">
+        <input id="Image" type="file" style="display:none;">
+        Image
+        </label>
     </div>
-    </div>                                       
-      
-    <button class="btn btn-default">Save</button>
+
+    <input type="submit" id="save-details" class="btn btn-default" style="display: block; margin: 0 auto;">
   </form>
 </div>
+<script>
 
+        function save() {
+            var formdata = new FormData();
+            var file = document.querySelector('input[id=Image]').files[0];
+            formdata.append("image", file);
+            formdata.append("title", document.getElementById("Title"));
+            formdata.append("classification", document.getElementById("classification").value);
+            formdata.append("latitude", document.getElementById("Latitude"));
+            formdata.append("longitude", document.getElementById("Longitude"));
+            formdata.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+            $.ajax({
+                url: "http://localhost:8000/save-details/",
+                type: "POST",
+                data: formdata,
+                processData: false,
+                contentType: false,
+                success: function () {
+                }
+            });
+
+        }
+
+</script>
 </body>
 </html>
-
-
-Title
-Description
-Classification: Excellent / Good / Interesting / Not interesting
-Geographic coordinates (then it shows on map where it is) (extra: getting user location when possible if a button)
-Photos upload (several upload possible using if possible drag’n drop, image compression at the same time, adding a branded watermark)
-Date (automatically)
-Author (automatically)

@@ -64,3 +64,24 @@ def activate(self, request, uidb64, token, backend='django.contrib.auth.backends
         return HttpResponse('you can login')
     else:
         return HttpResponse('activation link is invalid!')
+
+
+def save_details(request):
+    if request.method == "POST":
+        user = UserModel.objects.get(pk=request.user.pk)
+        try:
+            settings = ProfileModel.objects.create(
+                user=user,
+                title=request.POST['title'],
+                image=request.FILES['image'],
+                description=request.POST['description'],
+                classification=request.POST['classification'],
+                lat=request.POST['latitude'],
+                lon=request.POST['longitude'],
+            )
+            settings.save()
+            return JsonResponse({"deleted": "deleted"})
+        except:
+            return JsonResponse({"not deleted": "not deleted"})
+    else:
+        return HttpResponse("GETTTTTT")

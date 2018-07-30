@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
-import os
+import os, cloudinary
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 
@@ -38,8 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user'
+    'user',
+    'cloudinary'
 ]
+
+cloudinary.config(
+    cloud_name='dudptvezz',
+    api_key='253498931766656',
+    api_secret='0W4z1ktG8AKtLzdetlB36SKJgxg'
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
