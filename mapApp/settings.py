@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user',
-    'cloudinary'
+    'cloudinary',
+    'details',
+    'django.contrib.gis'
 ]
 
 cloudinary.config(
@@ -84,7 +86,7 @@ WSGI_APPLICATION = 'mapApp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'mapdb',
         'USER': 'postgres',
         'PASSWORD': '123456',

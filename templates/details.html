@@ -7,25 +7,28 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="{% static 'js/jquery.min.js' %}"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'alertifyjs/alertify.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'alertifyjs/css/alertify.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'alertifyjs/css/themes/default.min.css' %}" />
 </head>
 <body>
 <br><br><br><br><br><br>
 <div class="container">
-  <form method="POST">
+  <form method="POST" id="details">
       {% csrf_token %}
     <div class="form-group">
       <input class="form-control" id="Title" placeholder="Title" name="Title">
     </div>
     <div class="form-group">
-      <input class="form-control" id="Description" placeholder="Description" name="Description">
+      <textarea class="form-control" rows="5" id="Description" placeholder="Description" name="Description"></textarea>
     </div>
     <div class="form-group">
         <select class="selectpicker" id="classification">
-            <option>Mustard</option>
-            <option>Ketchup</option>
-            <option>Relish</option>
+            <option>Excellent</option>
+            <option>Good</option>
+            <option>Interesting</option>
+            <option>Not interesting</option>
         </select>
     </div>
       <div class="form-group">
@@ -42,19 +45,24 @@
         </label>
     </div>
 
-    <input type="submit" id="save-details" class="btn btn-default" style="display: block; margin: 0 auto;">
+    <input type="submit" onclick="save()" id="save-details" class="btn btn-default" style="display: block; margin: 0 auto;">
   </form>
 </div>
 <script>
+
+        $("#details").submit(function(e){
+                e.preventDefault(e);
+        });
 
         function save() {
             var formdata = new FormData();
             var file = document.querySelector('input[id=Image]').files[0];
             formdata.append("image", file);
-            formdata.append("title", document.getElementById("Title"));
+            formdata.append("title", document.getElementById("Title").value);
+            formdata.append("description", document.getElementById("Description").value);
             formdata.append("classification", document.getElementById("classification").value);
-            formdata.append("latitude", document.getElementById("Latitude"));
-            formdata.append("longitude", document.getElementById("Longitude"));
+            formdata.append("latitude", document.getElementById("Latitude").value);
+            formdata.append("longitude", document.getElementById("Longitude").value);
             formdata.append("csrfmiddlewaretoken", '{{ csrf_token }}');
             $.ajax({
                 url: "http://localhost:8000/save-details/",
@@ -62,10 +70,16 @@
                 data: formdata,
                 processData: false,
                 contentType: false,
-                success: function () {
+                success: function (data) {
+                    if (data.added){
+                        alertify.success("Saved");
+                    }
+                    else{
+                        alertify.error("Not Saved")
+                    }
+                    $('#details').trigger("reset");
                 }
             });
-
         }
 
 </script>

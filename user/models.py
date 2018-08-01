@@ -1,11 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from cloudinary.models import CloudinaryField
-from django.db.models.signals import pre_delete
-import cloudinary
 
 
 class AccountManager(BaseUserManager):
@@ -60,24 +56,3 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
         verbose_name = _("user")
         verbose_name_plural = _("users")
 
-
-class ProfileModel(models.Model):
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
-    title = models.CharField(_("title"), max_length=64)
-    description = models.TextField(_("description"))
-    classification = models.CharField(_('classification'), max_length=30)
-    image = CloudinaryField(_('image'))
-    lat = models.FloatField(_('latitude'), blank=True, null=True)
-    lon = models.FloatField(_('longitude'), blank=True, null=True)
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = _("profile")
-        verbose_name_plural = _("profiles")
-
-
-@receiver(pre_delete, sender=ProfileModel)
-def photo_delete(sender, instance, **kwargs):
-    cloudinary.uploader.destroy(instance.image.public_id)

@@ -1,8 +1,6 @@
 from django import forms
-from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm
-from .models import UserModel, ProfileModel
-from django.forms import ModelForm
+from .models import UserModel
 
 
 class SignUpForm(UserCreationForm):

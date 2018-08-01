@@ -1,6 +1,6 @@
 from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
 from django.template.loader import render_to_string
 from user.tokens import account_activation_token
 from .forms import *
@@ -47,10 +47,6 @@ def log_in(request):
     return render(request, 'log_register.html', {'login_form': log_in_form, 'signup_form': sing_up_form})
 
 
-def user_profile(request):
-    return render(request, "user_profile.html")
-
-
 def activate(self, request, uidb64, token, backend='django.contrib.auth.backends.ModelBackend'):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
@@ -66,22 +62,5 @@ def activate(self, request, uidb64, token, backend='django.contrib.auth.backends
         return HttpResponse('activation link is invalid!')
 
 
-def save_details(request):
-    if request.method == "POST":
-        user = UserModel.objects.get(pk=request.user.pk)
-        try:
-            settings = ProfileModel.objects.create(
-                user=user,
-                title=request.POST['title'],
-                image=request.FILES['image'],
-                description=request.POST['description'],
-                classification=request.POST['classification'],
-                lat=request.POST['latitude'],
-                lon=request.POST['longitude'],
-            )
-            settings.save()
-            return JsonResponse({"deleted": "deleted"})
-        except:
-            return JsonResponse({"not deleted": "not deleted"})
-    else:
-        return HttpResponse("GETTTTTT")
+def index(request):
+    return render(request, 'index.html')
