@@ -4,6 +4,7 @@ from details.models import DetailModel
 from user.models import UserModel
 from datetime import datetime
 from django.contrib.gis.geos import Point
+from cloudinary import CloudinaryImage
 
 
 def details(request):
@@ -17,11 +18,15 @@ def index(request):
 def save_details(request):
     if request.method == "POST":
         user = UserModel.objects.get(pk=request.user.pk)
+        photo = request.FILES['image']
+        image = CloudinaryImage(photo).image(
+            overlay="static/images/200-star.jpg"
+        )
         try:
             settings = DetailModel.objects.create(
                 user=user,
                 title=request.POST['title'],
-                image=request.FILES['image'],
+                image=image,
                 description=request.POST['description'],
                 classification=request.POST['classification'],
                 point=Point(float(request.POST['longitude']), float(request.POST['latitude'])),

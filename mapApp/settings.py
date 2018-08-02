@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'user',
     'cloudinary',
     'details',
-    'django.contrib.gis'
+    'django.contrib.gis',
+    'imagekit'
 ]
 
 cloudinary.config(
@@ -49,6 +50,7 @@ cloudinary.config(
     api_key='253498931766656',
     api_secret='0W4z1ktG8AKtLzdetlB36SKJgxg'
 )
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

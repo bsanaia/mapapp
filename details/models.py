@@ -29,3 +29,8 @@ class DetailModel(models.Model):
 @receiver(pre_delete, sender=DetailModel)
 def photo_delete(sender, instance, **kwargs):
     cloudinary.uploader.destroy(instance.image.public_id)
+
+
+@receiver(pre_save, sender=DetailModel)
+def add_watermark(sender, instance, **kwargs):
+    cloudinary.uploader.upload()
