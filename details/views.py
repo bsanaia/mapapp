@@ -1,32 +1,27 @@
 from django.http import JsonResponse, HttpResponseForbidden
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from details.models import DetailModel
 from user.models import UserModel
 from datetime import datetime
 from django.contrib.gis.geos import Point
-from cloudinary import CloudinaryImage
+import json
 
 
 def details(request):
-    return render(request, "details.html")
-
-
-def index(request):
-    return render(request, 'index.html')
+    if request.user.is_authenticated:
+        return render(request, "details.html")
+    else:
+        return redirect('user:login')
 
 
 def save_details(request):
     if request.method == "POST":
         user = UserModel.objects.get(pk=request.user.pk)
-        photo = request.FILES['image']
-        image = CloudinaryImage(photo).image(
-            overlay="static/images/200-star.jpg"
-        )
         try:
             settings = DetailModel.objects.create(
                 user=user,
                 title=request.POST['title'],
-                image=image,
+                image=request.FILES['image'],
                 description=request.POST['description'],
                 classification=request.POST['classification'],
                 point=Point(float(request.POST['longitude']), float(request.POST['latitude'])),
@@ -42,6 +37,14 @@ def save_details(request):
         return HttpResponseForbidden()
 
 
-def test(request):
+def index(request):
     on_map_objects = DetailModel.objects.all()
-    pass
+    objs = {}
+    photo = ''
+    for i, obj in enumerate(on_map_objects):
+        objs[i] = {"email": obj.user.email, "title": obj.title,
+                   "classification": obj.classification, "description": obj.description, "coords": obj.point.coords,
+                   "photo": obj.image.url}
+        photo = obj.image.url
+    return render(request, 'index.html', {'map_objs': json.dumps(objs), "photo": photo,
+                                          "watermark": "static/images/200-star.jpg"})

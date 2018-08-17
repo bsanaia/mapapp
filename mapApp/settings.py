@@ -145,8 +145,7 @@ AUTH_USER_MODEL = "user.UserModel"
 AUTHENTICATION_BACKENDS = ['user.backends.EmailBackend']
 
 # email
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'djangoaaaa@gmail.com'
 EMAIL_HOST_PASSWORD = 'testtest123'

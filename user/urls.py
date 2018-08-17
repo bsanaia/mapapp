@@ -15,5 +15,6 @@ urlpatterns = [
     path('accounts/password/change/done/', auth_views.password_change_done, name='password_change_done'),
     url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         views.activate, name='activate'),
-
+    url(r'^logout/$', views.logout_view, name='logout'),
+    path("change_password", views.change_password, name='change_password')
 ]

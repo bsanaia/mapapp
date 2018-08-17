@@ -31,6 +31,7 @@ def photo_delete(sender, instance, **kwargs):
     cloudinary.uploader.destroy(instance.image.public_id)
 
 
-@receiver(pre_save, sender=DetailModel)
-def add_watermark(sender, instance, **kwargs):
-    cloudinary.uploader.upload()
+# @receiver(pre_save, sender=DetailModel)
+# def add_watermark(sender, instance, **kwargs):
+#     image = CloudinaryResource(instance.image)
+#     cloudinary.CloudinaryImage(image).image(overlay="static/images/200-star.jpg",  width=100)

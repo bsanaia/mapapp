@@ -1,0 +1,48 @@
+<html>
+<head>
+<style>
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: #666;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #ddd;
+}
+</style>
+</head>
+{% block head %}{% endblock %}
+<body>
+
+<ul>
+<li><a href="{% url 'details:index' %}">Index</a></li>
+{% if user.is_authenticated %}
+    <li><a href="{% url 'details:details' %}">Profile</a></li>
+{% endif %}
+    {% if user.is_authenticated %}
+        <li><a href="{% url 'user:logout' %}">Logout</a></li>
+    {% else %}
+        <li><a href="{% url 'user:login' %}">Login</a></li>
+    {% endif %}
+
+</ul>
+<br><br><br>
+{% block index %}{% endblock %}
+{% block details %}{% endblock %}
+{% block scripts %}{% endblock %}
+</body>
+</html>

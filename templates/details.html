@@ -1,20 +1,17 @@
+{% extends 'base.html' %}
 {% load static cloudinary %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Bootstrap Example</title>
+{% block head %}
+    <title>Details</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'alertifyjs/alertify.min.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'alertifyjs/css/alertify.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'alertifyjs/css/themes/default.min.css' %}" />
-</head>
-<body>
-<br><br><br><br><br><br>
-<div class="container">
+    <script src="{% static 'js/notify.js' %}"></script>
+{% endblock %}
+{% block details %}
+    <br><br><br><br><br><br>
+    <div class="container">
   <form method="POST" id="details">
       {% csrf_token %}
     <div class="form-group">
@@ -48,7 +45,20 @@
     <input type="submit" onclick="save()" id="save-details" class="btn btn-default" style="display: block; margin: 0 auto;">
   </form>
 </div>
-<script>
+    <br><br><br><br>
+<form id="change_password" method="POST">
+{% csrf_token %}
+    <div class="form-group">
+        <input placeholder="new password" id="password1" style="display: block; margin: 0 auto;" type="password">
+        <input placeholder="confirm password" id="password2" style="display: block; margin: 0 auto;" type="password">
+    </div>
+<input type="submit" onclick="change_password()" class="btn btn-default" style="display: block; margin: 0 auto;" placeholder="change password">
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
 
         $("#details").submit(function(e){
                 e.preventDefault(e);
@@ -65,23 +75,49 @@
             formdata.append("longitude", document.getElementById("Longitude").value);
             formdata.append("csrfmiddlewaretoken", '{{ csrf_token }}');
             $.ajax({
-                url: "http://localhost:8000/save-details/",
+                url: {% url 'details:save-details' %},
                 type: "POST",
                 data: formdata,
                 processData: false,
                 contentType: false,
                 success: function (data) {
                     if (data.added){
-                        alertify.success("Saved");
+                        $.notify("Saved", "success");
+                        $('#details').trigger("reset");
                     }
                     else{
-                        alertify.error("Not Saved")
+                        $.notify("Not Saved", "error");
                     }
-                    $('#details').trigger("reset");
                 }
             });
         }
 
+        $("#change_password").submit(function(e){
+                e.preventDefault(e);
+        });
+
+        change_password = function () {
+            var password1 = $('#password1').val();
+            var password2 = $('#password2').val();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'user:change_password' %}",
+                data: {
+                    'password1': password1,
+                    'password2': password2,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (res) {
+                    if (res.changed === "OK") {
+                        $.notify("password successfully changed!", "success");
+                    }
+                    else{
+                        $.notify("passwords did not match", "error");
+                    }
+                }
+            });
+        }
+
+
 </script>
-</body>
-</html>
+{% endblock %}
